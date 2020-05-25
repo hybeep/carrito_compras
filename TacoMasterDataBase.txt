@@ -1,0 +1,116 @@
+usuario
+	id_usuario
+	nivel (1,2)
+	nombre
+	apellido paterno
+	apellido materno
+	email
+	password
+	telefono
+
+direccion
+	ciudad
+	delegacion
+	colonia
+	cp
+	calle
+	no_inter
+	no_ext
+
+producto
+	nombre
+	codigo
+	imagen
+	descripcion
+	cualidades
+
+historial
+	id_ usuario
+	codigo
+	fecha data
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+create database TacoMaster_DB;
+
+use TacoMaster_DB;
+
+create table CCarnes(
+	id_ccarne INT not null primary key,
+	tipo_carne VARCHAR(45) not null);
+
+create table CTortilla(
+	id_ctortilla INT not null primary key,
+	tipo_tortilla CHAR);
+
+create table MTacos(
+	id_mtacos INT not null auto_increment primary key,
+	nom_prod VARCHAR(45));
+
+create table DTacos(
+	id_taco INT not null auto_increment primary key,
+	precio_taco DECIMAL(19,2),
+	stock_taco INT,
+	img_taco blob,
+	id_ccarne INT,
+	id_ctortilla INT,
+	id_mtacos INT,
+	constraint id_ccarne_fk foreign key (id_ccarne) references CCarnes(id_ccarne),
+	constraint id_ctortilla_fk foreign key (id_ctortilla) references CTortilla(id_ctortilla),
+	constraint id_mtacos_fk foreign key (id_mtacos) references MTacos(id_mtacos));
+
+++++++++++++++++++++++++++++++++++++++
+
+create table ECompraTacos(
+	id_ect INT not null auto_increment primary key,
+	id_mtacos INT,
+	constraint id_mtacos_ect_fk foreign key (id_mtacos) references MTacos(id_mtacos));
+
+++++++++++++++++++++++++++++++++++++++
+
+create table EClienteCompra(
+	id_ecc INT not null auto_increment primary key,
+	id_ect INT,
+	id_mu INT,
+	constraint id_ect_fk foreign key (id_ect) references ECompraTacos(id_ect),
+	constraint id_mu_fk foreign key (id_mu) references MUsuario(id_mu));
+
+create table MCarritoTaco(
+	id_mct INT not null auto_increment primary key,
+	cant_mct INT,
+	subtotal_mct  DECIMAL(19,2),
+	total_mct DECIMAL(19,2),
+	fecha DATE,
+	id_ecc INT,
+	constraint id_ecc_fk foreign key (id_ecc) references EClienteCompra(id_ecc));
+
+create table MUsuario(
+	id_mu INT not null auto_increment primary key,
+	nom_mu varchar(50) not null,
+	appat_mu varchar(50) not null,
+	apmat_mu varchar(50) not null,
+	birth_mu date not null,
+	tel_mu INT not null,
+	cel_mu INT not null);
+
+create table EDireccionCliente(
+	id_edc INT not null auto_increment primary key,
+	id_mde INT not null,
+	id_mu INT not null,
+	constraint id_mde_fk foreign key (id_mde) references MDireccionEntrega(id_mde));
+
+create table MDireccionEntrega(
+	id_mde INT not null auto_increment primary key,
+	ciudad varchar(30) not null,
+	cp INT not null,
+	colonia varchar(30) not null,
+	no_int INT,
+	no_ext INT,
+	calle varchar(30) not null);
+
+++++++++++++++++++++++++++++++++++++++
+
+create table MAdministradores(
+	id_administrador INT auto_increment not null primary key,
+	nombre_admin varchar(50) not null,
+	appat_admin varchar(50) not null,
+	apmat_admin varchar(50) not null,
+	cel_admin INT not null);
